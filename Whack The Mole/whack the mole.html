@@ -1,0 +1,227 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="index.js">
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins";
+        cursor: none;
+        overflow: hidden;
+    }
+
+    body {
+        background-color: #397fa0;
+        color: #fff;
+        display: flex;
+        justify-content: center;
+    }
+
+    .heading {
+        font-size: 2em;
+        margin: 1em 0;
+        text-align: center;
+    }
+
+    .score {
+        font-size: 1.3em;
+        margin: 1em 0;
+        text-align: center;
+    }
+
+    .holesCont {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 2.3em;
+        justify-items: center;
+    }
+
+    .hole {
+        position: relative;
+        height: 80px;
+        width: 80px;
+        border-radius: 50%;
+        background-color: #000;
+        overflow: hidden;
+    }
+
+    .mole {
+        position: absolute;
+        z-index: 1;
+        height: 60px;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        animation: appear 0.3s linear;
+        pointer-events: none;
+    }
+
+    @keyframes appear {
+        from {
+            bottom: -60px;
+        }
+
+        to {
+            bottom: 0;
+        }
+    }
+
+    .buttons {
+        margin-top: 3em;
+        text-align: center;
+    }
+
+    .buttons button {
+        padding: 15px 45px;
+        background-color: inherit;
+        border: 1px solid #fff;
+        color: #fff;
+        border-radius: 3px;
+        outline: none;
+    }
+
+    button.stop {
+        display: none;
+    }
+
+    .cursor img {
+        position: absolute;
+        height: 125px;
+        z-index: 2;
+        transform: translate(-10px, -40px);
+        pointer-events: none;
+    }
+
+    @keyframes hit {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(-30deg);
+        }
+    }
+</style>
+
+<body>
+
+    <div class="container">
+        <div class="heading">
+            <p>
+                Whack The Mole
+            </p>
+        </div>
+        <div class="score">Points: <span>0</span></div>
+        <div class="holesCont">
+            <div class="hole hole1"></div>
+            <div class="hole hole2"></div>
+            <div class="hole hole3"></div>
+            <div class="hole hole4"></div>
+            <div class="hole hole5"></div>
+            <div class="hole hole6"></div>
+            <div class="hole hole7"></div>
+            <div class="hole hole8"></div>
+            <div class="hole hole9"></div>
+        </div>
+        <div class="buttons">
+            <button class="play">PLAY</button>
+            <button class="stop">STOP</button>
+        </div>
+        <div class="cursor">
+            <img src="hammer1.png" />
+        </div>
+
+    </div>
+    <audio src="mole-killer.wav"></audio>
+
+
+
+
+
+
+
+
+
+    <script>
+
+
+        const score = document.querySelector(".score span");
+        const holes = document.querySelectorAll(".hole");
+        const playBtn = document.querySelector(".buttons .play");
+        const stopBtn = document.querySelector(".buttons .stop");
+        const cursor = document.querySelector(".cursor img");
+
+        window.addEventListener("mousemove", (e) => {
+            cursor.style.top = e.pageY + "px";
+            cursor.style.left = e.pageX + "px";
+
+            window.addEventListener("click", () => {
+                cursor.style.animation = "hit 0.1s ease";
+                setTimeout(() => {
+                    cursor.style.removeProperty("animation");
+                }, 100);
+            });
+        });
+
+        playBtn.addEventListener("click", () => {
+            playBtn.style.display = "none";
+            stopBtn.style.display = "inline-block";
+
+            let hole;
+            let points = 0;
+
+            const startGame = setInterval(() => {
+                let arrayNo = Math.floor(Math.random() * 9);
+                hole = holes[arrayNo];
+
+
+                let image = document.createElement("img");
+                image.setAttribute("src", "mole.png");
+                image.setAttribute("class", "mole");
+
+                hole.appendChild(image);
+
+                setTimeout(() => {
+                    hole.removeChild(image);
+                }, 700);
+            }, 900);
+
+            window.addEventListener("click", (e) => {
+                if (e.target === hole) score.innerText = ++points;
+                if (e.target === hole) playAudio();
+
+            });
+
+            stopBtn.addEventListener("click", () => {
+                clearInterval(startGame);
+
+                stopBtn.style.display = "none";
+                playBtn.style.display = "inline-block";
+                score.innerText = 0;
+            });
+        });
+
+
+        var audio = document.querySelector("audio");
+
+        function playAudio() {
+            audio.play();
+        }
+
+
+
+
+    </script>
+</body>
+
+</html>
